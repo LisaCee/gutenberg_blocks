@@ -19,6 +19,7 @@ function mytheme_blocks_register() {
 		array(
 			'wp-blocks',
 			'wp-i18n',
+			// 'wp-element',
 		)
 	);
 	register_block_type(
@@ -31,5 +32,5 @@ function mytheme_blocks_register() {
 		)
 	);
 }
-// add_action( 'init', 'mytheme_blocks_register' );
-add_action( 'enqueue_block_assets', 'mytheme_blocks_register' );
+add_action( 'init', 'mytheme_blocks_register' );
+// add_action( 'enqueue_block_editor_assets', 'mytheme_blocks_register' );
