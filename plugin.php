@@ -62,7 +62,7 @@ function mytheme_blocks_register() {
 			__FILE__
 		),
 		array(
-			'',
+			'jquery',
 		)
 	);
 	// editor style.
