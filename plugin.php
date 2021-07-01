@@ -9,6 +9,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Adds a category to the block listings
+ *
+ * @param array  $categories An array of exisiting block listing categories.
+ * @param object $post My post.
+ *
+ * @return array Updated categories
+ */
+function mytheme_blocks_categories( $categories, $post ) {
+	return array_merge(
+		$categories,
+		array(
+			array(
+				'slug'  => 'mytheme-category',
+				'title' => __( 'My theme category', 'mytheme-blocks' ),
+				'icon'  => 'wordpress',
+			),
+		)
+	);
+}
+
+add_filter( 'block_categories', 'mytheme_blocks_categories', 10, 2 );
+
 /** Register my blocks through reusable function, rather than
  * call register_block_type multiple times.
 

@@ -53,6 +53,7 @@ module.exports = (env, argv) => {
 						loader: 'babel-loader',
 						options: {
 							//Babel presets: https://babeljs.io/docs/en/presets
+							plugins: ["@babel/plugin-proposal-class-properties"],
 							presets: [
 								'@babel/preset-env',
 								[
@@ -94,7 +95,8 @@ module.exports = (env, argv) => {
 			"@wordpress/i18n": ["wp", "i18n"],
 			"@wordpress/editor": ["wp", "editor"],
 			"@wordpress/components": ["wp", "components"],
-			"@wordpress/block-editor": ["wp", "blockEditor"]
+			"@wordpress/block-editor": ["wp", "blockEditor"],
+			"@wordpress/element": ["wp", "element"]
 		}
 	}
 	return config;
