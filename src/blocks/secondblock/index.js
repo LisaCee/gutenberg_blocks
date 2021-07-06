@@ -9,8 +9,9 @@ import './styles.editor.scss';
 
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, getColorClassName} from '@wordpress/block-editor';
 import Edit from './edit';
+import classnames from 'classnames';
 
 // var el = wp.element.createElement;
 // This was replaced with JSX
@@ -47,24 +48,52 @@ registerBlockType( 'mytheme-blocks/secondblock', {
 			type: 'string',
 			source: 'html',
 			selector: 'p',
-			alignment: {
-				type: 'string'
-			},
-			backgroundColor: {
-				type: 'string',
-			},
-			textColor: {
-				type: 'string',
-			},
+		},
+		alignment: {
+			type: 'string'
+		},
+		backgroundColor: {
+			type: 'string',
+		},
+		textColor: {
+			type: 'string',
+		},
+		customBackgroundColor: {
+			type: 'string'
+		},
+		customTextColor: {
+			type: 'string'
 		}
 	},
 	edit: Edit,
 	save: ( { attributes } ) => {
-		const { content, alignment, backgroundColor, textColor } = attributes;
-		return <RichText.Content
+		const {
+			content,
+			alignment,
+			backgroundColor,
+			textColor,
+			customBackgroundColor,
+			customTextColor
+		} = attributes;
+
+		const backgroundClass = getColorClassName( 'background-color', backgroundColor );
+
+		const textClass = getColorClassName( 'color', textColor );
+		const classes = classnames( {
+			[backgroundClass]: backgroundClass,
+			[textClass]: textClass
+		} );
+
+		return ( <RichText.Content
 			tagName="p"
+			className={ classes }
 			value={ content }
-			style={ { textAlign: alignment, backgroundColor: backgroundColor, color: textColor } }
+			style={ {
+				textAlign: alignment,
+				backgroundColor: backgroundClass ? undefined : customBackgroundColor,
+				color: textClass ? undefined : customTextColor
+			} }
 			/>
+		);
 	}
 } )

@@ -1,6 +1,6 @@
 import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { RichText, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings } from '@wordpress/block-editor';
+import { RichText, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, withColors, ContrastChecker } from '@wordpress/block-editor';
 import { Toolbar, DropdownMenu, PanelBody, ToggleControl, ColorPicker, ColorPalette } from "@wordpress/components";
 
 class Edit extends Component {
@@ -13,17 +13,17 @@ class Edit extends Component {
 		this.props.setAttributes( { alignment } )
 	}
 
-	onChangeBackgroundColor = ( backgroundColor ) => {
-		this.props.setAttributes( { backgroundColor } )
-	}
+	// onChangeBackgroundColor = ( backgroundColor ) => {
+	// 	this.props.setAttributes( { backgroundColor } )
+	// }
 
-	onChangeTextColor = ( textColor ) => {
-		this.props.setAttributes( { textColor } )
-	}
+	// onChangeTextColor = ( textColor ) => {
+	// 	this.props.setAttributes( { textColor } )
+	// }
 	
 	render() {
-		const { className, attributes } = this.props;
-		const { content, alignment, backgroundColor, textColor } = attributes;
+		const { className, attributes, setTextColor, setBackgroundColor, backgroundColor, textColor } = this.props;
+		const { content, alignment } = attributes;
 
 		return (
 			<>
@@ -53,18 +53,23 @@ class Edit extends Component {
 					colorSettings={
 						[
 							{
-								value: backgroundColor,
-								onChange: this.onChangeBackgroundColor,
+								value: backgroundColor.color,
+								onChange: setBackgroundColor,
 								label: __( 'Background color', 'mytheme-blocks' )
 							},
 							{
-								value: textColor,
-								onChange: this.onChangeTextColor,
+								value: textColor.color,
+								onChange: setTextColor,
 								label: __( 'Text color', 'mytheme-blocks' )
 							}
 						]
 					}
-					/>
+					>
+						<ContrastChecker
+							textColor={textColor.color}
+							backgroundColor={backgroundColor.color}
+						/>
+				</PanelColorSettings>
 			</InspectorControls>
 			<BlockControls> 
 				<AlignmentToolbar 
@@ -120,7 +125,7 @@ class Edit extends Component {
 				onChange = { this.onChangeContent }
 				value = { content }
 				formattingControls = { ['bold'] }
-				style={ { textAlign: alignment, backgroundColor: backgroundColor, color: textColor } }
+				style={ { textAlign: alignment, backgroundColor: backgroundColor.color, color: textColor.color } }
 				/>
 		</>
 	)
@@ -128,4 +133,4 @@ class Edit extends Component {
 	}
 }
 
-export default Edit;
+export default withColors( 'backgroundColor', {'textColor': 'color'} )(Edit);
