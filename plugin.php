@@ -78,6 +78,7 @@ function mytheme_blocks_register() {
 			'wp-block-editor',
 			'wp-editor',
 			'wp-components',
+			'lodash',
 		)
 	);
 	// UI.

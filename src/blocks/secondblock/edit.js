@@ -1,7 +1,8 @@
 import { Component } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { RichText, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, withColors, ContrastChecker } from '@wordpress/block-editor';
-import { Toolbar, DropdownMenu, PanelBody, ToggleControl, ColorPicker, ColorPalette } from "@wordpress/components";
+import { Toolbar, DropdownMenu, PanelBody, ToggleControl, ColorPicker, ColorPalette, RangeControl } from "@wordpress/components";
+import classnames from 'classnames';
 
 class Edit extends Component {
 
@@ -10,7 +11,7 @@ class Edit extends Component {
 	}
 	// Can code own alignment function, but WP has AlignmentToolbar component.
 	onChangeAlignment = ( alignment ) => {
-		this.props.setAttributes( { alignment } )
+		this.props.setAttributes( { textAlignment } )
 	}
 
 	// onChangeBackgroundColor = ( backgroundColor ) => {
@@ -20,34 +21,35 @@ class Edit extends Component {
 	// onChangeTextColor = ( textColor ) => {
 	// 	this.props.setAttributes( { textColor } )
 	// }
-	
+
+	toggleShadow = () => {
+		this.props.setAttributes( { shadow: !this.props.attributes.shadow } );
+	}
+	onChangeShadowOpacity = ( shadowOpacity ) => {
+		this.props.setAttributes( { shadowOpacity } )
+	}
 	render() {
 		const { className, attributes, setTextColor, setBackgroundColor, backgroundColor, textColor } = this.props;
-		const { content, alignment } = attributes;
-
+		const { content, textAlignment, shadow, shadowOpacity } = attributes;
+		const classes = classnames( className, {
+			'has-shadow': shadow,
+			[`shadow-opacity-${shadowOpacity * 100}`]: shadowOpacity
+		});
 		return (
 			<>
 			<InspectorControls>
-				{/* <PanelBody title = { __( 'Panel', 'mytheme-blocks' ) }> */}
-					{/* <ToggleControl 
-						label = { __( 'Label', 'mytheme-blocks' ) }
-						onChange = { (value) => console.log( value ) }
-					/> */}
-					{/* <ColorPicker
-						color = "#f03"
-						onChangeComplete = { ( value ) => console.log( value ) }
-					/> */}
-					{/* <ColorPalette 
-						colors = { [
-							{ color: 'red' },
-							{ color: 'blue' },
-							{ color: 'yellow' }
-						] }
-						onChange = { onChangeBackgroundColor }
-					/> */}
-
-				{/* </PanelBody> */}
-				{/* PanelColorSettings replaces the panel and the color palette/picker */}
+				<PanelBody title= { __( 'Settings', 'mytheme-blocks' ) }>
+					{ shadow &&
+						<RangeControl 
+							label = { __( 'Shadow Opacity', 'mytheme-blocks' ) }
+							value = { shadowOpacity }
+							onChange= { this.onChangeShadowOpacity }
+							min  = {0.1}
+							max  = {0.4}
+							step = {0.1}
+						/>
+					}
+				</PanelBody>
 				<PanelColorSettings 
 					title={ __( 'Panel', 'mytheme-blocks' ) }
 					colorSettings={
@@ -71,10 +73,21 @@ class Edit extends Component {
 						/>
 				</PanelColorSettings>
 			</InspectorControls>
-			<BlockControls> 
+			<BlockControls
+				controls = {
+					[
+						{
+							icon: 'wordpress',
+							title: __('Shadow', 'mytheme-blocks'),
+							onClick: this.toggleShadow,
+							isActive: shadow
+						}
+					]
+				}
+			> 
 				<AlignmentToolbar 
 					onChange = { this.onChangeAlignment }
-					value = { alignment }
+					value = { textAlignment }
 				/>
 				<Toolbar 
 					// adds dropdown functionality
@@ -120,12 +133,12 @@ class Edit extends Component {
 			</BlockControls>
 
 			<RichText 
-				tagName ="p"
-				className ={ className }
+				tagName ="h4"
+				className ={ classes }
 				onChange = { this.onChangeContent }
 				value = { content }
 				formattingControls = { ['bold'] }
-				style={ { textAlign: alignment, backgroundColor: backgroundColor.color, color: textColor.color } }
+				style={ { textAlign: textAlignment, backgroundColor: backgroundColor.color, color: textColor.color } }
 				/>
 		</>
 	)
